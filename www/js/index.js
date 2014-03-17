@@ -1,27 +1,12 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+  //DECLARE
+  $( "#popup-source" ).popup()
+  //DECLARE
 var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
     },
-    // Bind Event Listeners
+    // Bind Event Listeners 
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
@@ -38,12 +23,47 @@ var app = {
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        console.log('Received Event: ' + parentElement);
 
-        console.log('Received Event: ' + id);
+        //Window resize
+        var screen = $.mobile.getScreenHeight()
+        var header = $(".ui-header").hasClass("ui-header-fixed") ? $(".ui-header").outerHeight()  - 1 : $(".ui-header").outerHeight()
+        var footer = $(".ui-footer").hasClass("ui-footer-fixed") ? $(".ui-footer").outerHeight() - 1 : $(".ui-footer").outerHeight()
+        var contentCurrent = $(".ui-content").outerHeight() - $(".ui-content").height()
+        var content = screen - header - footer - contentCurrent
+        $(".ui-content").height(content)
+        //Window resize
     }
 };
+
+$('#form-login').submit(function() {
+var datosUsuario = $('#user').val()
+var datosPassword = $('#password').val()
+archivoValidacion = "http://localhost/rutaphp/validacionLogin.php"
+$.getJSON( archivoValidacion, { usuario:datosUsuario ,password:datosPassword})
+.done(function(respuestaServer) {
+if(respuestaServer.validacion == "ok"){
+$.mobile.changePage("#page-home",
+ {
+    transition: "flow",
+    reverse: false
+});
+}else{
+var popupText = document.getElementById('text-popup');   
+popupText.innerHTML = "Usuario y/o Clave inconrrectos";
+$( "#popup-source" ).popup( "open" )
+}
+})
+return false;
+})
+window.addEventListener("orientationchange", function() {
+//Window resize
+var screen = $.mobile.getScreenHeight()
+var header = $(".ui-header").hasClass("ui-header-fixed") ? $(".ui-header").outerHeight()  - 1 : $(".ui-header").outerHeight()
+var footer = $(".ui-footer").hasClass("ui-footer-fixed") ? $(".ui-footer").outerHeight() - 1 : $(".ui-footer").outerHeight()
+var contentCurrent = $(".ui-content").outerHeight() - $(".ui-content").height()
+var content = screen - header - footer - contentCurrent
+$(".ui-content").height(content)
+//Window resize
+}, false);
